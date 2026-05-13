@@ -1,0 +1,36 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environments (High Priority)
+venv/
+.venv/
+env/
+ENV/
+
+# Environment Variables and Secrets
+.env
+.venv
+*.env
+*.secret
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Unit test / coverage reports
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Framework specific (e.g., Django, Flask)
+instance/
+.webassets-cache
+db.sqlite3
+db.sqlite3-journal
+
+# OS specific files
+.DS_Store
+Thumbs.db
