@@ -3,6 +3,7 @@ from models import Loan
 from risk_engine import analyze_loan
 from mock_data import mock_loans
 from activity_logger import activity_logs
+from mifos_service import get_transformed_loans
 
 app = FastAPI()
 
@@ -32,6 +33,27 @@ def analyze(loan: Loan, autonomy_level: int = 1):
     result = analyze_loan(loan, autonomy_level)
     return result
 
+@app.get("/mifos-portfolio-analysis")
+def mifos_portfolio_analysis():
+
+    loans = get_transformed_loans()
+
+    analyzed_portfolio = []
+
+    for loan in loans:
+        loan_model = Loan(**loan)
+        analysis = analyze_loan(loan_model)
+
+        analyzed_portfolio.append({
+            "loan": loan,
+            "analysis": analysis
+        })
+
+    return {
+        "totalLoans": len(analyzed_portfolio),
+        "portfolioAnalysis": analyzed_portfolio
+    }
+    
 @app.get("/activity-logs")
 def get_logs():
     return {

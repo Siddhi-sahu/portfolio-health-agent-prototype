@@ -52,3 +52,19 @@ log_activity()
 activity_logs.append(log)
        ↓
 GET /activity-logs shows accumulated logs
+
+
+# mifos api integration
+
+Mifos JSON
+   ↓
+Transformation Layer
+   ↓
+Your Internal Loan Model
+   ↓
+Risk Engine
+
+# next
+
+a REAL portfolio monitoring prototype.
+Mifos → Transform → Risk Engine → FastAPI Endpoint
