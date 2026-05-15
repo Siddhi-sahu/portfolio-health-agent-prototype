@@ -7,9 +7,7 @@ def analyze_loan(loan, autonomy_level=1):
 
     explanations = []
 
-    # -------------------------
     # DELINQUENCY SCORING
-    # -------------------------
 
     if loan.daysLate > 60:
 
@@ -41,9 +39,7 @@ def analyze_loan(loan, autonomy_level=1):
             "Loan repayment is mostly on time"
         )
 
-    # -------------------------
     # ARREARS SCORING
-    # -------------------------
 
     if loan.inArrears:
 
@@ -53,9 +49,7 @@ def analyze_loan(loan, autonomy_level=1):
             "Account is currently in arrears"
         )
 
-    # -------------------------
     # NPA SCORING
-    # -------------------------
 
     if loan.isNPA:
 
@@ -65,9 +59,7 @@ def analyze_loan(loan, autonomy_level=1):
             "Loan classified as Non-Performing Asset"
         )
 
-    # -------------------------
     # DELINQUENT AMOUNT
-    # -------------------------
 
     if loan.delinquentAmount > 50000:
 

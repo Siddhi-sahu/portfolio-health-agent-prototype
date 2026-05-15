@@ -60,3 +60,92 @@ def get_logs():
         "totalLogs": len(activity_logs),
         "logs": activity_logs,
     }
+    
+@app.get("/portfolio-summary")
+def portfolio_summary():
+
+    loans = get_transformed_loans()
+
+    analyses = []
+
+    for loan in loans:
+        loan_model = Loan(**loan)
+
+        analysis = analyze_loan(loan_model)
+
+        analyses.append({
+            "loan": loan,
+            "analysis": analysis
+        })
+
+    high_risk = 0
+    medium_risk = 0
+    low_risk = 0
+
+    total_exposure = 0
+    total_delinquent = 0
+
+    npa_accounts = 0
+    
+    # ANALYTICS
+
+    for item in analyses:
+
+        loan = item["loan"]
+
+        analysis = item["analysis"]
+
+        total_exposure += loan["loanAmount"]
+
+        total_delinquent += loan["delinquentAmount"]
+
+        if loan["isNPA"]:
+
+            npa_accounts += 1
+
+        if analysis["riskLevel"] == "HIGH":
+
+            high_risk += 1
+
+        elif analysis["riskLevel"] == "MEDIUM":
+
+            medium_risk += 1
+
+        else:
+
+            low_risk += 1
+
+    # -------------------------
+    # PORTFOLIO HEALTH
+    # -------------------------
+
+    if high_risk >= 2:
+
+        portfolio_health = "HIGH_RISK"
+
+    elif medium_risk >= 2:
+
+        portfolio_health = "MODERATE_RISK"
+
+    else:
+
+        portfolio_health = "STABLE"
+
+    return {
+
+        "totalLoans": len(loans),
+
+        "highRiskLoans": high_risk,
+
+        "mediumRiskLoans": medium_risk,
+
+        "lowRiskLoans": low_risk,
+
+        "totalPortfolioExposure": total_exposure,
+
+        "totalDelinquentAmount": total_delinquent,
+
+        "npaAccounts": npa_accounts,
+
+        "portfolioHealth": portfolio_health
+    }
