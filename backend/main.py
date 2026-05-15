@@ -4,29 +4,47 @@ from risk_engine import analyze_loan
 from mock_data import mock_loans
 from activity_logger import activity_logs
 from mifos_service import get_transformed_loans
+from ai.summary_service import generate_portfolio_summary
+from ai.ai_activity_logger import ai_logs
 
 app = FastAPI()
 
+def generate_portfolio_analysis_data(autonomy_level=1):
 
-@app.get("/")
-def home():
-    return {"message": "Portfolio Health Agent API running"}
+    loans = get_transformed_loans()
 
-@app.get("/portfolio-analysis")
-def portfolio_analysis(autonomy_level: int = 1):
     analyzed_loans = []
 
-    for loan_data in mock_loans:
+    for loan_data in loans:
+
         loan = Loan(**loan_data)
 
-        result = analyze_loan(loan, autonomy_level)
+        result = analyze_loan(
+            loan,
+            autonomy_level
+        )
 
-        analyzed_loans.append(result)
+        analyzed_loans.append({
+            "loan": loan_data,
+            "analysis": result
+        })
 
     return {
         "totalLoans": len(analyzed_loans),
         "portfolioAnalysis": analyzed_loans,
     }
+
+@app.get("/")
+def home():
+    return {"message": "Portfolio Health Agent API running"}
+
+    
+@app.get("/portfolio-analysis")
+def portfolio_analysis(autonomy_level: int = 1):
+
+    return generate_portfolio_analysis_data(
+        autonomy_level
+    )
     
 @app.post("/analyze-loan")
 def analyze(loan: Loan, autonomy_level: int = 1):
@@ -115,9 +133,7 @@ def portfolio_summary():
 
             low_risk += 1
 
-    # -------------------------
     # PORTFOLIO HEALTH
-    # -------------------------
 
     if high_risk >= 2:
 
@@ -148,4 +164,30 @@ def portfolio_summary():
         "npaAccounts": npa_accounts,
 
         "portfolioHealth": portfolio_health
+    }
+    
+@app.get("/ai-portfolio-summary")
+def ai_portfolio_summary():
+
+    portfolio_results = generate_portfolio_analysis_data()
+
+    try:
+        summary = generate_portfolio_summary(
+        portfolio_results
+        )
+    except Exception:
+        summary = "AI summary unavailable"
+        
+
+    return {
+        "structuredData": portfolio_results,
+        "aiSummary": summary
+    }
+    
+@app.get("/ai-logs")
+def get_ai_logs():
+
+    return {
+        "totalLogs": len(ai_logs),
+        "logs": ai_logs
     }

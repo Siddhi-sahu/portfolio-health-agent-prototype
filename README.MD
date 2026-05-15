@@ -83,3 +83,14 @@ Generate explainable analysis
 Create audit/activity logs
    ↓
 Return portfolio-wide analysis
+
+what langchain is doing:
+structured portfolio data
+↓
+prompt template
+↓
+LangChain chain
+↓
+Ollama local LLM
+↓
+natural language summary
