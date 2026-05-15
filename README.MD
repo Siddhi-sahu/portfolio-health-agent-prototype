@@ -68,3 +68,18 @@ Risk Engine
 
 a REAL portfolio monitoring prototype.
 Mifos → Transform → Risk Engine → FastAPI Endpoint
+
+full working pipeline now:
+Mifos API
+   ↓
+Fetch real loans
+   ↓
+Transform data
+   ↓
+Run deterministic risk engine
+   ↓
+Generate explainable analysis
+   ↓
+Create audit/activity logs
+   ↓
+Return portfolio-wide analysis

@@ -1,20 +1,58 @@
 mock_loans = [
     {
         "clientName": "Ravi",
-        "daysLate": 45,
-        "loanAmount": 70000,
-        "missedPayments": 3,
+
+        "principal": 70000,
+
+        "inArrears": True,
+
+        "isNPA": False,
+
+        "status": {
+            "value": "Active"
+        },
+
+        "delinquent": {
+            "pastDueDays": 45,
+            "delinquentAmount": 15000
+        }
     },
+
     {
         "clientName": "Anita",
-        "daysLate": 12,
-        "loanAmount": 25000,
-        "missedPayments": 1,
+
+        "principal": 25000,
+
+        "inArrears": False,
+
+        "isNPA": False,
+
+        "status": {
+            "value": "Active"
+        },
+
+        "delinquent": {
+            "pastDueDays": 5,
+            "delinquentAmount": 1000
+        }
     },
+
     {
         "clientName": "Mohan",
-        "daysLate": 2,
-        "loanAmount": 10000,
-        "missedPayments": 0,
-    },
+
+        "principal": 600000,
+
+        "inArrears": True,
+
+        "isNPA": True,
+
+        "status": {
+            "value": "Active"
+        },
+
+        "delinquent": {
+            "pastDueDays": 90,
+            "delinquentAmount": 85000
+        }
+    }
 ]

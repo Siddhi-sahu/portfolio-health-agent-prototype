@@ -9,24 +9,106 @@ HEADERS = {
 }
 
 
+from mock_data import mock_loans
+
+
 def fetch_loans():
-    url = f"{BASE_URL}/loans"
 
-    response = requests.get(url, headers=HEADERS)
+    url = f"{BASE_URL}/loans?limit=10&offset=0"
 
-    print("STATUS:", response.status_code)
+    try:
 
-    return response.json()
+        response = requests.get(
+            url,
+            headers=HEADERS,
+        )
+
+        print("STATUS:", response.status_code)
+
+        if response.status_code != 200:
+
+            print("MIFOS FAILED — USING MOCK DATA")
+
+            return {
+                "pageItems": mock_loans
+            }
+
+        return response.json()
+
+    except Exception as e:
+
+        print("FETCH ERROR:", str(e))
+
+        print("USING MOCK DATA")
+
+        return {
+            "pageItems": mock_loans
+        }
 
 
 def transform_loan(mifos_loan):
-    delinquent_data = mifos_loan.get("delinquent") or {}
+
+    delinquent_data = mifos_loan.get("delinquent", {})
+
+    days_late = delinquent_data.get("pastDueDays", 0)
+
+    delinquent_amount = delinquent_data.get(
+        "delinquentAmount",
+        0
+    )
+
+    loan_amount = mifos_loan.get("principal", 0)
+
+    in_arrears = mifos_loan.get("inArrears", False)
+
+    is_npa = mifos_loan.get("isNPA", False)
+
+    loan_status = mifos_loan.get(
+        "status",
+        {}
+    ).get(
+        "value",
+        "UNKNOWN"
+    )
+
+    risk_flags = []
+
+    if days_late > 30:
+        risk_flags.append("HIGH_DPD")
+
+    if in_arrears:
+        risk_flags.append("IN_ARREARS")
+
+    if is_npa:
+        risk_flags.append("NPA_ACCOUNT")
+
+    if loan_amount > 500000:
+        risk_flags.append("HIGH_EXPOSURE")
 
     return {
-        "clientName": mifos_loan.get("clientName", "Unknown"),
-        "daysLate": delinquent_data.get("pastDueDays", 0),
-        "loanAmount": mifos_loan.get("principal", 0),
-        "missedPayments": 0
+        "clientName": mifos_loan.get(
+            "clientName",
+            "Unknown"
+        ),
+
+        "daysLate": days_late,
+
+        "loanAmount": loan_amount,
+
+        "missedPayments": max(
+            0,
+            days_late // 30
+        ),
+
+        "inArrears": in_arrears,
+
+        "isNPA": is_npa,
+
+        "delinquentAmount": delinquent_amount,
+
+        "riskFlags": risk_flags,
+
+        "loanStatus": loan_status
     }
     
 def get_transformed_loans():
