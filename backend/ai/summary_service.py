@@ -1,5 +1,5 @@
 from ai.chains import portfolio_chain
-from ai_activity_logger import log_ai_activity
+from ai.ai_activity_logger import log_ai_activity
 
 def generate_portfolio_summary(portfolio_results):
 

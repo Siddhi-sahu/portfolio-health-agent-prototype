@@ -1,13 +1,28 @@
 from fastapi import FastAPI
-from models import Loan
+from fastapi.middleware.cors import CORSMiddleware
+from models import Loan, OfficerFeedback
 from risk_engine import analyze_loan
 from mock_data import mock_loans
 from activity_logger import activity_logs
 from mifos_service import get_transformed_loans
 from ai.summary_service import generate_portfolio_summary
 from ai.ai_activity_logger import ai_logs
+from officer_feedback import officer_feedback, record_officer_feedback
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:5174",
+        "http://127.0.0.1:5174",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 def generate_portfolio_analysis_data(autonomy_level=1):
 
@@ -190,4 +205,24 @@ def get_ai_logs():
     return {
         "totalLogs": len(ai_logs),
         "logs": ai_logs
+    }
+
+
+@app.post("/officer-feedback")
+def submit_officer_feedback(feedback: OfficerFeedback):
+
+    saved_feedback = record_officer_feedback(feedback)
+
+    return {
+        "message": "Officer feedback recorded",
+        "feedback": saved_feedback
+    }
+
+
+@app.get("/officer-feedback")
+def get_officer_feedback():
+
+    return {
+        "totalFeedback": len(officer_feedback),
+        "feedback": officer_feedback
     }

@@ -94,3 +94,41 @@ LangChain chain
 Ollama local LLM
 ↓
 natural language summary
+
+
+# React dashboard
+
+The prototype includes a React dashboard in `frontend/` for proposal demos and officer review workflows.
+
+Run the backend:
+
+```bash
+cd backend
+venv/bin/uvicorn main:app --host 127.0.0.1 --port 8000
+```
+
+Run the frontend:
+
+```bash
+cd frontend
+npm install
+npm run dev -- --port 5173
+```
+
+Open:
+
+```text
+http://127.0.0.1:5173/
+```
+
+The dashboard connects to `http://127.0.0.1:8000` by default. To point it at another backend URL, set `VITE_API_BASE_URL` before running the frontend.
+
+Dashboard features:
+
+- portfolio risk queue
+- autonomy level control
+- deterministic confidence score
+- machine-readable decision factors
+- approval status and autonomy policy display
+- officer feedback form
+- activity and governance records

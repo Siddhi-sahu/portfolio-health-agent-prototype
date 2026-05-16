@@ -11,3 +11,9 @@ class Loan(BaseModel):
     delinquentAmount: float
     riskFlags: List[str]
     loanStatus: str
+
+
+class OfficerFeedback(BaseModel):
+    client: str
+    decision: str
+    notes: str

@@ -15,6 +15,7 @@ from mock_data import mock_loans
 def fetch_loans():
 
     url = f"{BASE_URL}/loans?limit=10&offset=0"
+    # url = f"{BASE_URL}/loans?limit=30&offset=20"
 
     try:
 
